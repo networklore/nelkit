@@ -1,0 +1,41 @@
+#################################################
+# For a guide to help you configure your
+# settings file please visit:
+# http://networklore.com/compare-router-configs/
+#################################################
+
+
+# Match all lines beginning with "ntp"
+match "^ntp"
+
+# Match all lines beginning with "snmp-server", but exclude "location"
+match_exclude "^snmp-server" "location"
+
+# Match all lines containing "logging"
+match "logging"
+
+# Match from a line starting with "line con" until a line starting
+# with "!"
+start_end "^line con" "^!"
+
+# Match from a line starting with "interface GigabitEthernet0/0"
+# (note the escaped "/" character) until a line starting with "!"
+# but ignore the "ip address" line or any line containing "flow"
+start_end_exclude "^interface GigabitEthernet0\/0" "^!" "ip address|flow"
+
+# Match from a line starting with "ip access-list extended ACL-INTERNET-V6"
+# match until a line starts with "!" or "i" (as in a new access-list),
+# but also exclude lines starting with either "!" or "i"
+start_end_exclude "^ip access-list extended ACL-INTERNET-V6" "^[!i]" "^[!i]"
+
+# Match lines starting with "service" or "no service"
+match_sort "^service|^no service"
+
+# Match lines starting with "ip inspect name", but don't care about the
+# order the commands appear in
+match_sort "^ip inspect name"
+
+# Match lines starting with "ip inspect name", but don't care about the
+# order the commands appear in. Also exclude lines containing DMZFW
+match_exclude_sort "^ip inspect name" "DMZFW"
+
