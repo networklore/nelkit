@@ -5,3 +5,7 @@ rules:
  - match:
     string: '^snmp-server'
     exclude: '^snmp-server location'
+
+ - between:
+    start: '^ip access-list extended ACCESS-IN'
+    until_not: '^ '
