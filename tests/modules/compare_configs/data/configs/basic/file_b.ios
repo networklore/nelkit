@@ -1,2 +1,10 @@
+ip access-list extended ACCESS-IN
+ remark # Allow ICMP
+ permit icmp any any echo
+ permit icmp any any echo-reply
+ deny   icmp any any
+ remark # Allow HTTP
+ permit tcp any any eq www
+!
 snmp-server trap-source Loopback0
 snmp-server location Gothenburg

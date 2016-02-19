@@ -1,3 +1,12 @@
+ip access-list extended ACCESS-IN
+ remark # Allow ICMP
+ permit icmp any any echo
+ permit icmp any any echo-reply
+ deny   icmp any any
+ remark # Allow HTTP
+ permit tcp any any eq www
+ deny   ip any any
+!
 snmp-server trap-source Loopback0
 snmp-server location Malmo
 snmp-server enable traps config
