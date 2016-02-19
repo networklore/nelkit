@@ -1,0 +1,2 @@
+snmp-server trap-source Loopback0
+snmp-server location Gothenburg

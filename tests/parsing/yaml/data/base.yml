@@ -1,0 +1,5 @@
+rules:
+
+ - match:
+    string: '^snmp-server'
+    exclude: '^snmp-server location'
