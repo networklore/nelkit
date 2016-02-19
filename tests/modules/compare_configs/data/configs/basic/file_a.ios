@@ -6,7 +6,7 @@ ip access-list extended ACCESS-IN
  deny   icmp any any
  remark # Allow HTTP
  permit tcp any any eq www
- deny ip any any
+ deny   ip any any
 !
 snmp-server trap-source Loopback0
 snmp-server location Stockholm
