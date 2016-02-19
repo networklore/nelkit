@@ -3,7 +3,7 @@ import itertools
 import os
 import re
 from glob import glob
-from nelkit.exceptions import NelkitException
+from nelkit.exceptions import FileNotFound, NelkitException
 from nelkit.parsing.yaml.loader import YamlLoader
 
 VALID_RULES = ['between', 'match']
@@ -25,7 +25,7 @@ class CompareConfigs:
             if len(self._config_files) > 0:
                 self._baseline = self._config_files[0]
             else:
-                raise NelkitException('No config files')
+                raise FileNotFound('No config files found')
 
         self._parse_config_files()
         self._parse_sort_rules()
