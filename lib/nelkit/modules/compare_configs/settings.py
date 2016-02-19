@@ -46,7 +46,7 @@ class CompareConfigs:
     def _parse_between_rule(self, rule):
         self._num_rules += 1
         if 'start' not in rule.keys():
-            raise NelkitException('start missing in between rule')
+            raise NelkitException('start key missing in between rule')
         if not isinstance(rule['start'], str):
             raise NelkitException('"start" under between rule has the wrong format')
         match = {}
