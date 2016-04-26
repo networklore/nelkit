@@ -1,3 +1,4 @@
+"""setup.py."""
 import re
 
 from codecs import open
@@ -35,7 +36,7 @@ config = {
     'author': 'Patrick Ogenstad',
     'author_email': 'patrick@ogenstad.com',
     'license': 'Apache',
-    'url': 'http://networklore.com/nelkit/',
+    'url': 'https://networklore.com/nelkit/',
     'install_requires': ['argparse', 'nelsnmp >= 0.2.0', 'PyYAML'],
     'classifiers': ['Development Status :: 4 - Beta',
                     'Intended Audience :: Developers',

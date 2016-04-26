@@ -1,3 +1,4 @@
+"""Module to compare different configurations files."""
 import difflib
 import itertools
 import os
@@ -10,8 +11,10 @@ VALID_RULES = ['between', 'match']
 
 
 class CompareConfigs:
+    """Compare configs class, used in nk-compare-configs."""
 
     def __init__(self, settings_file=None, config_dir=None, baseline=None):
+        """Compare configs class, used in nk-compare-configs."""
         self._baseline = baseline
         self._settings = settings_file
         self._config_dir = config_dir
@@ -36,7 +39,10 @@ class CompareConfigs:
             for rule in self._baseline_matches:
                 if self._baseline_matches[rule] != self._matches[host][rule]:
                     node = host.split(os.path.sep)[-1]
-                    diff = difflib.unified_diff(self._baseline_matches[rule], self._matches[host][rule], fromfile='baseline', tofile=node)
+                    diff = difflib.unified_diff(
+                        self._baseline_matches[rule],
+                        self._matches[host][rule],
+                        fromfile='baseline', tofile=node)
                     diff = os.linesep.join([x for x in diff])
                     if host not in self._diff.keys():
                         self._diff[host] = {}
@@ -197,12 +203,13 @@ class CompareConfigs:
             self._baseline_matches = self._matches[self._baseline]
 
     def output_diff(self):
+        """Print output with diffs."""
         for host in sorted(self._diff.keys()):
             node = host.split(os.path.sep)[-1]
-            print ('#########################')
-            print ('# %s' % node)
-            print ('#########################')
+            print('#########################')
+            print('# %s' % node)
+            print('#########################')
             for rule in self._diff[host]:
-                print (self._diff[host][rule])
-            print ('#########################')
-            print ('')
+                print(self._diff[host][rule])
+            print('#########################')
+            print('')

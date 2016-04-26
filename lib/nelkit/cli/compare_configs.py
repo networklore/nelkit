@@ -1,3 +1,4 @@
+"""nk-compare-configs."""
 from nelkit.args.base import BaseArgs
 from nelkit.globals import NelkitGlobals
 from nelkit.modules.compare_configs.settings import CompareConfigs
@@ -6,6 +7,7 @@ description = 'Compare configurations against a baseline'
 
 
 def main():
+    """Launch nk-compare-configs."""
     NelkitGlobals(FRIENDLY_EXCEPTION=True)
 
     argparser = BaseArgs(description)

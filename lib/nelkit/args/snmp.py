@@ -1,10 +1,12 @@
+"""Module to handle snmp arguments for cli tools."""
 from nelkit.args.base import BaseArgs
 
 
 class SnmpArgs(BaseArgs):
+    """Argument class for snmp tools."""
 
-    def __init__(self, description, epilog = ''):
-
+    def __init__(self, description, epilog=''):
+        """Argument class for snmp tools."""
         super(SnmpArgs, self).__init__(description, epilog)
 
     def _add_local_args(self):

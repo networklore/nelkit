@@ -4,13 +4,13 @@
 NELKIT: A toolkit for network engineers
 =======================================
 
-[Nelkit](http://networklore.com/nelkit/) is a collection of tools aimed to help network engineers.
+[Nelkit](https://networklore.com/nelkit/) is a collection of tools aimed to help network engineers.
 
 ### Installation
 
 Install using pip:
 
-```ruby
+```bash
 
     $ pip install nelkit
 ```
