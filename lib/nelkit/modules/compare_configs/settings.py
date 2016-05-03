@@ -7,7 +7,7 @@ from glob import glob
 from nelkit.exceptions import FileNotFound, NelkitException
 from nelkit.parsing.yaml.loader import YamlLoader
 
-VALID_RULES = ['between', 'match']
+# VALID_RULES = ['between', 'match']
 
 
 class CompareConfigs:
@@ -42,7 +42,8 @@ class CompareConfigs:
                     diff = difflib.unified_diff(
                         self._baseline_matches[rule],
                         self._matches[host][rule],
-                        fromfile='baseline', tofile=node)
+                        fromfile='baseline',
+                        tofile=node)
                     diff = os.linesep.join([x for x in diff])
                     if host not in self._diff.keys():
                         self._diff[host] = {}
@@ -97,50 +98,9 @@ class CompareConfigs:
                         if rule not in self._matches[config].keys():
                             self._matches[config][rule] = []
                         if self.rules[rule]['rule_type'] == 'match':
-                            regex = re.compile(self.rules[rule]['string'])
-                            if regex.match(line):
-                                if self.rules[rule]['exclude']:
-                                    exclude = re.compile(self.rules[rule]['exclude'])
-                                    if exclude.match(line):
-                                        break
-                                self._matches[config][rule].append(line.rstrip())
+                            self._run_match_rule(rule, config, line)
                         elif self.rules[rule]['rule_type'] == 'between':
-                            if config not in self._between.keys():
-                                self._between[config] = {}
-                            if rule not in self._between[config].keys():
-                                self._between[config][rule] = {}
-                                self._between[config][rule]['in'] = False
-                            start_string = re.compile(self.rules[rule]['start'])
-                            if self.rules[rule]['end']:
-                                end_string = re.compile(self.rules[rule]['end'])
-                                if self._between[config][rule]['in']:
-                                    if end_string.match(line):
-                                        self._between[config][rule]['in'] = False
-                                    if self.rules[rule]['exclude']:
-                                        exclude = re.compile(self.rules[rule]['exclude'])
-                                        if exclude.match(line):
-                                            break
-                                    self._matches[config][rule].append(line.rstrip())
-
-                            if self.rules[rule]['until_not']:
-                                end_string = re.compile(self.rules[rule]['until_not'])
-                                if self._between[config][rule]['in']:
-                                    if end_string.match(line):
-                                        if self.rules[rule]['exclude']:
-                                            exclude = re.compile(self.rules[rule]['exclude'])
-                                            if exclude.match(line):
-                                                break
-                                        self._matches[config][rule].append(line.rstrip())
-                                    else:
-                                        self._between[config][rule]['in'] = False
-
-                            if start_string.match(line):
-                                self._between[config][rule]['in'] = True
-                                if self.rules[rule]['exclude']:
-                                    exclude = re.compile(self.rules[rule]['exclude'])
-                                    if exclude.match(line):
-                                        break
-                                self._matches[config][rule].append(line.rstrip())
+                            self._run_between_rule(rule, config, line)
 
     def _parse_match_rule(self, rule):
         self._num_rules += 1
@@ -161,6 +121,7 @@ class CompareConfigs:
     def _parse_settings(self):
         l = YamlLoader(filename=self._settings)
         data = l.data
+        # Move this if statement to _parse_configs_dir
         if self._config_dir:
             self._parse_configs_dir(self._config_dir)
         else:
@@ -181,14 +142,14 @@ class CompareConfigs:
                 raise NelkitException('rule not a dict!!!!')
 
             for criteria in rule:
-                if criteria not in VALID_RULES:
-                    raise NelkitException('thats not right')
                 if not isinstance(rule[criteria], dict):
                     raise NelkitException('NOoOooooo')
                 if criteria == 'between':
                     self._parse_between_rule(rule[criteria])
                 elif criteria == 'match':
                     self._parse_match_rule(rule[criteria])
+                else:
+                    raise NelkitException('%s is not a valid rule type' % criteria)
 
     def _parse_sort_rules(self):
 
@@ -201,6 +162,53 @@ class CompareConfigs:
             raise NelkitException('Unable to find baseline')
         else:
             self._baseline_matches = self._matches[self._baseline]
+
+    def _run_between_rule(self, rule, config, line):
+        if config not in self._between.keys():
+            self._between[config] = {}
+        if rule not in self._between[config].keys():
+            self._between[config][rule] = {}
+            self._between[config][rule]['in'] = False
+        start_string = re.compile(self.rules[rule]['start'])
+        if self.rules[rule]['end']:
+            end_string = re.compile(self.rules[rule]['end'])
+            if self._between[config][rule]['in']:
+                if end_string.match(line):
+                    self._between[config][rule]['in'] = False
+                if self.rules[rule]['exclude']:
+                    exclude = re.compile(self.rules[rule]['exclude'])
+                    if exclude.match(line):
+                        return
+                self._matches[config][rule].append(line.rstrip())
+
+        if self.rules[rule]['until_not']:
+            end_string = re.compile(self.rules[rule]['until_not'])
+            if self._between[config][rule]['in']:
+                if end_string.match(line):
+                    if self.rules[rule]['exclude']:
+                        exclude = re.compile(self.rules[rule]['exclude'])
+                        if exclude.match(line):
+                            return
+                    self._matches[config][rule].append(line.rstrip())
+                else:
+                    self._between[config][rule]['in'] = False
+
+        if start_string.match(line):
+            self._between[config][rule]['in'] = True
+            if self.rules[rule]['exclude']:
+                exclude = re.compile(self.rules[rule]['exclude'])
+                if exclude.match(line):
+                    return
+            self._matches[config][rule].append(line.rstrip())
+
+    def _run_match_rule(self, rule, config, line):
+        regex = re.compile(self.rules[rule]['string'])
+        if regex.match(line):
+            if self.rules[rule]['exclude']:
+                exclude = re.compile(self.rules[rule]['exclude'])
+                if exclude.match(line):
+                    return
+            self._matches[config][rule].append(line.rstrip())
 
     def output_diff(self):
         """Print output with diffs."""
