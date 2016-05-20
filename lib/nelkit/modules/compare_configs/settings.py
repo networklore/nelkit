@@ -7,8 +7,6 @@ from glob import glob
 from nelkit.exceptions import FileNotFound, NelkitException
 from nelkit.parsing.yaml.loader import YamlLoader
 
-# VALID_RULES = ['between', 'match']
-
 
 class CompareConfigs:
     """Compare configs class, used in nk-compare-configs."""
@@ -62,6 +60,8 @@ class CompareConfigs:
         match['end'] = rule.get('end')
         match['sort'] = rule.get('sort')
         match['until_not'] = rule.get('until_not')
+        match['description'] = rule.get('description')
+
         if match['end'] and match['until_not']:
             raise NelkitException('"between" rule can not have both end and until_not')
         elif not match['end'] and not match['until_not']:
@@ -73,7 +73,16 @@ class CompareConfigs:
             match['exclude'] = None
         self.rules[self._num_rules] = match
 
-    def _parse_configs_dir(self, config_dir):
+    def _parse_configs_dir(self, config_setting, data):
+
+        if config_setting:
+            config_dir = config_setting
+        else:
+            if 'configs' in data.keys():
+                config_dir = data['configs']
+            else:
+                raise NelkitException('config key not found in file')
+
         if not isinstance(config_dir, list):
             config_dir = [config_dir]
 
@@ -110,6 +119,7 @@ class CompareConfigs:
             raise NelkitException('"string" under match rule has the wrong format')
         match = {}
         match['rule_type'] = 'match'
+        match['description'] = rule.get('description')
         match['string'] = rule['string']
         match['sort'] = rule.get('sort')
         if 'exclude' in rule.keys():
@@ -121,14 +131,7 @@ class CompareConfigs:
     def _parse_settings(self):
         l = YamlLoader(filename=self._settings)
         data = l.data
-        # Move this if statement to _parse_configs_dir
-        if self._config_dir:
-            self._parse_configs_dir(self._config_dir)
-        else:
-            if 'configs' in data.keys():
-                self._parse_configs_dir(data['configs'])
-            else:
-                raise NelkitException('config key not found in file')
+        self._parse_configs_dir(self._config_dir, data)
 
         if 'rules' not in data.keys():
             raise NelkitException('rules key not found in file')
