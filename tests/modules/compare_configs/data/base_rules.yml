@@ -3,6 +3,7 @@ configs: 'tests/modules/compare_configs/data/configs/basic'
 rules:
 # Match SNMP Server
  - match:
+    description: Match SNMP settings, ignore location
     string: '^snmp-server'
     exclude: '^snmp-server location'
 
