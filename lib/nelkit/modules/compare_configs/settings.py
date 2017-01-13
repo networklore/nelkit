@@ -57,9 +57,14 @@ class CompareConfigs:
         match = {}
         match['rule_type'] = 'between'
         match['start'] = rule['start']
+        match['start_re'] = re.compile(rule['start'])
         match['end'] = rule.get('end')
         match['sort'] = rule.get('sort')
         match['until_not'] = rule.get('until_not')
+        if match['end']:
+            match['end_re'] = re.compile(match['end'])
+        if match['until_not']:
+            match['until_not_re'] = re.compile(match['until_not'])
         match['description'] = rule.get('description')
 
         if match['end'] and match['until_not']:
@@ -71,6 +76,9 @@ class CompareConfigs:
             match['exclude'] = rule['exclude']
         else:
             match['exclude'] = None
+        if match['exclude']:
+            match['exclude_re'] = re.compile(match['exclude'])
+
         self.rules[self._num_rules] = match
 
     def _parse_configs_dir(self, config_setting, data):
@@ -121,6 +129,7 @@ class CompareConfigs:
         match['rule_type'] = 'match'
         match['description'] = rule.get('description')
         match['string'] = rule['string']
+        match['string_re'] = re.compile(rule['string'])
         match['sort'] = rule.get('sort')
         if 'exclude' in rule.keys():
             match['exclude'] = rule['exclude']
@@ -172,31 +181,26 @@ class CompareConfigs:
         if rule not in self._between[config].keys():
             self._between[config][rule] = {}
             self._between[config][rule]['in'] = False
-        start_string = re.compile(self.rules[rule]['start'])
         if self.rules[rule]['end']:
-            end_string = re.compile(self.rules[rule]['end'])
             if self._between[config][rule]['in']:
-                if end_string.match(line):
+                if self.rules[rule]['end_re'].match(line):
                     self._between[config][rule]['in'] = False
                 if self.rules[rule]['exclude']:
-                    exclude = re.compile(self.rules[rule]['exclude'])
-                    if exclude.match(line):
+                    if self.rules[rule]['exclude_re'].match(line):
                         return
                 self._matches[config][rule].append(line.rstrip())
 
         if self.rules[rule]['until_not']:
-            end_string = re.compile(self.rules[rule]['until_not'])
             if self._between[config][rule]['in']:
-                if end_string.match(line):
+                if self.rules[rule]['until_not_re'].match(line):
                     if self.rules[rule]['exclude']:
-                        exclude = re.compile(self.rules[rule]['exclude'])
-                        if exclude.match(line):
+                        if self.rules[rule]['exclude_re'].match(line):
                             return
                     self._matches[config][rule].append(line.rstrip())
                 else:
                     self._between[config][rule]['in'] = False
 
-        if start_string.match(line):
+        if self.rules[rule]['start_re'].match(line):
             self._between[config][rule]['in'] = True
             if self.rules[rule]['exclude']:
                 exclude = re.compile(self.rules[rule]['exclude'])
@@ -205,8 +209,7 @@ class CompareConfigs:
             self._matches[config][rule].append(line.rstrip())
 
     def _run_match_rule(self, rule, config, line):
-        regex = re.compile(self.rules[rule]['string'])
-        if regex.match(line):
+        if self.rules[rule]['string_re'].match(line):
             if self.rules[rule]['exclude']:
                 exclude = re.compile(self.rules[rule]['exclude'])
                 if exclude.match(line):
