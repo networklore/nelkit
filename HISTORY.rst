@@ -3,10 +3,15 @@
 Release History
 ---------------
 
+0.0.3
++++++
+
+* Speed improvements for nk-compare-configs
+
 0.0.2
 +++++
 
-* Added description for the tests used by nk-compare-config
+* Added description for the tests used by nk-compare-configs
 
 
 0.0.1
