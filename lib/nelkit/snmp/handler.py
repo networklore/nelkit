@@ -32,9 +32,22 @@ class NelkitSnmp(SnmpHandler):
 
             if args.L == "authPriv":
                 self.privkey = args.X
+                self.snmp_auth = cmdgen.UsmUserData(
+                    args.U,
+                    authKey=args.A,
+                    authProtocol=self.integrity,
+                    privKey=args.X,
+                    privProtocol=self.privacy)
+            else:
+                self.snmp_auth = cmdgen.UsmUserData(
+                    args.U,
+                    authKey=args.A,
+                    authProtocol=self.integrity)
 
         self.host = args.H
         self.port = int(args.p)
+        self.timeout = 1
+        self.retries = 5
 
     def _verify_snmp_arguments(self, args):
         if args.P == "2c" and args.C is None:

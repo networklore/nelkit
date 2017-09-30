@@ -12,11 +12,14 @@ def main():
     args = argparser.parser.parse_args()
     snmp = NelkitSnmp(args)
     hostinfo = HostInfo(snmp)
-    hostinfo.get_all()
-    print('OS: %s' % hostinfo.os)
-    print('Version: %s' % hostinfo.version)
-    print('Vendor: %s' % hostinfo.vendor)
-    print('Description: %s' % hostinfo.description)
+    try:
+        hostinfo.get_all()
+        print('OS: %s' % hostinfo.os)
+        print('Version: %s' % hostinfo.version)
+        print('Vendor: %s' % hostinfo.vendor)
+        print('Description: %s' % hostinfo.description)
+    except Exception as e:
+        print('ERROR: {0}'.format(e))
 
 
 if __name__ == "__main__":
