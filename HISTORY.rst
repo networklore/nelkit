@@ -3,6 +3,11 @@
 Release History
 ---------------
 
+0.0.4
++++++
+
+* Bugfixes for nk-snmp-deviceinfo
+
 0.0.3
 +++++
 

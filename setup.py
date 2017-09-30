@@ -37,7 +37,7 @@ config = {
     'author_email': 'patrick@ogenstad.com',
     'license': 'Apache',
     'url': 'https://networklore.com/nelkit/',
-    'install_requires': ['argparse', 'nelsnmp >= 0.2.0', 'PyYAML'],
+    'install_requires': ['argparse', 'nelsnmp >= 0.2.7', 'PyYAML'],
     'classifiers': ['Development Status :: 4 - Beta',
                     'Intended Audience :: Developers',
                     'Intended Audience :: System Administrators']
