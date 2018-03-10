@@ -27,6 +27,9 @@ class CompareConfigs:
                 self._baseline = self._config_files[0]
             else:
                 raise FileNotFound('No config files found')
+        else:
+            if '/' not in self._baseline:
+                self._baseline = self._config_dir + '/' + self._baseline
 
         self._parse_config_files()
         self._parse_sort_rules()
@@ -90,6 +93,7 @@ class CompareConfigs:
                 config_dir = data['configs']
             else:
                 raise NelkitException('config key not found in file')
+        self._config_dir = config_dir
 
         if not isinstance(config_dir, list):
             config_dir = [config_dir]
@@ -141,6 +145,9 @@ class CompareConfigs:
         l = YamlLoader(filename=self._settings)
         data = l.data
         self._parse_configs_dir(self._config_dir, data)
+
+        if not self._baseline:
+            self._baseline = data.get('baseline')
 
         if 'rules' not in data.keys():
             raise NelkitException('rules key not found in file')

@@ -3,6 +3,11 @@
 Release History
 ---------------
 
+0.0.5
++++++
+
+* Allow configuration of baseline file for nk-compare-configs
+
 0.0.4
 +++++
 

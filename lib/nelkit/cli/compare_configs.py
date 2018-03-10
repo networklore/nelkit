@@ -20,5 +20,6 @@ def main():
     cc = CompareConfigs(settings_file=args.c)
     cc.output_diff()
 
+
 if __name__ == "__main__":
     main()

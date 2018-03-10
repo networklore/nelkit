@@ -20,5 +20,5 @@ Install using pip:
 
 These tools are currently included:
 
-* nk-compare-configs - Preforms audits of configuration files for network devices
+* [nk-compare-configs](https://networklore.com/nk-compare-configs/) - Preforms audits of configuration files for network devices
 * nk-snmp-deviceinfo - Polls a network device using SNMP to show vendor and version information
